@@ -5,8 +5,8 @@ import android.media.CamcorderProfile
 import android.media.MediaCodec
 import android.media.MediaCodecInfo
 import android.media.MediaFormat
+import android.support.annotation.RequiresPermission
 import android.view.Surface
-import androidx.annotation.RequiresPermission
 import com.example.common.FlagsUtil
 import timber.log.Timber
 
@@ -76,7 +76,9 @@ class VideoRecorder(context: Context): Recorder(), Camera2Producer.CameraListene
                 if (FlagsUtil.isFlagSet(info.flags, 0)) {
 //                    logd("Video fragment is video data")
                     val audioData = Record.create(byteBuffer, info)
-                    records.add(audioData)
+                    synchronized(records) {
+                        records.add(audioData)
+                    }
                     codec.releaseOutputBuffer(index, false)
                 }
 

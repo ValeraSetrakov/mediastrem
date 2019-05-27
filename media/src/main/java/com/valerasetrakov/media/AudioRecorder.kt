@@ -24,7 +24,7 @@ class AudioRecorder: Recorder() {
     val CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO
     val BIT_RATE_AUDIO = 128000
     val AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT
-    val AUDIO_SOURCE = MediaRecorder.AudioSource.MIC
+    val AUDIO_SOURCE = MediaRecorder.AudioSource.CAMCORDER
 
     init {
         createAudioRecord()
@@ -79,7 +79,9 @@ class AudioRecorder: Recorder() {
                 if (isFlagSet(info.flags, 0)) {
 //                    logd("Audio fragment is audio data")
                     val audioData = Record.create(byteBuffer, info)
-                    records.add(audioData)
+                    synchronized(records) {
+                        records.add(audioData)
+                    }
                     codec.releaseOutputBuffer(index, false)
                 }
 

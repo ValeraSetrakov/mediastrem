@@ -4,7 +4,7 @@ import android.content.Context
 import android.media.MediaMuxer
 import android.os.Handler
 import android.os.HandlerThread
-import androidx.annotation.RequiresPermission
+import android.support.annotation.RequiresPermission
 import timber.log.Timber
 import java.io.File
 import java.util.*
@@ -12,10 +12,7 @@ import java.util.*
 class MediaController private constructor(context: Context): VideoRecorder.VideoRecorderListener {
 
     companion object {
-        fun logd(message: String) {
-            Timber.d("MediaController. $message")
-        }
-
+        
         const val DELAY = 5_000L
         const val PERIOD = 5_000L
         private val workerThread = HandlerThread("MediaController thread").also { it.start() }
@@ -45,7 +42,18 @@ class MediaController private constructor(context: Context): VideoRecorder.Video
         Timber.d("MediaController. $message")
     }
 
-    private var filesDir: File = context.filesDir
+    private var filesDir: File
+    init {
+        val mediaFileDirs = context.externalMediaDirs
+        filesDir = mediaFileDirs?.let {
+            val firstMediaFilesDir = mediaFileDirs[0]
+            if (firstMediaFilesDir == null || !firstMediaFilesDir.exists()) {
+                context.filesDir
+            } else {
+                firstMediaFilesDir
+            }
+        } ?: context.filesDir
+    }
     private var audioRecorder: AudioRecorder = AudioRecorder()
     private var videoRecorder :VideoRecorder = VideoRecorder(context).apply { videoRecorderListener = this@MediaController }
     var onSaveMediaDataListener: OnSaveMediaDataListener? = null
@@ -91,14 +99,14 @@ class MediaController private constructor(context: Context): VideoRecorder.Video
     override fun onStopVideoRecorder() {
         logd("On video recorder stopped")
         audioRecorder.stop()
-        mediaControllerListener?.onStopStopMediaController()
+        mediaControllerListener?.onStopMediaController()
     }
 
 
 
     interface MediaControllerListener {
         fun onStartMediaController()
-        fun onStopStopMediaController()
+        fun onStopMediaController()
     }
 
     private inner class SaveMediaDataToFileTask: TimerTask() {

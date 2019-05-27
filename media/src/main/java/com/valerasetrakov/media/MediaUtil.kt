@@ -4,15 +4,14 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.MediaRecorder
 import android.util.Size
-import com.example.common.now
+import com.example.common.fileNameLikeDate
 import com.example.commonandroid.printThreadName
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
 
 object MediaUtil {
 
-    private val simpleDateFormat = SimpleDateFormat("yyyy-dd-MM-hh-ss".toLowerCase())
+//    private val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd-hh-mm-ss")
 
     fun getVideoFilePath(filesDir: File): String {
         val fileName = generateFileName()
@@ -40,5 +39,5 @@ object MediaUtil {
      */
     private fun chooseVideoSize(choices: Array<Size>) = choices.firstOrNull { it.width <= 1080 && it.height <= 1080 } ?: choices[choices.size - 1]
 
-    private fun generateFileName () = "${simpleDateFormat.now()}.mp4"
+    private fun generateFileName () = "${fileNameLikeDate()}.mp4"//"${simpleDateFormat.now()}.mp4"
 }

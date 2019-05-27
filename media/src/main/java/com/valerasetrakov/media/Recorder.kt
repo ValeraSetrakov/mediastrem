@@ -5,7 +5,7 @@ abstract class Recorder {
     abstract fun start()
     abstract fun stop()
 
-    fun read(): List<Record> {
+    fun read(): List<Record> = synchronized(records) {
         val list = records.toList()
         records.clear()
         return list

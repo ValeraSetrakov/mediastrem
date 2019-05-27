@@ -3,8 +3,8 @@ package com.valerasetrakov.media
 import android.content.Context
 import android.hardware.camera2.*
 import android.os.Handler
+import android.support.annotation.RequiresPermission
 import android.view.Surface
-import androidx.annotation.RequiresPermission
 import com.example.commonandroid.log
 import timber.log.Timber
 
